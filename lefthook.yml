@@ -1,0 +1,13 @@
+pre-commit:
+  parallel: true
+  commands:
+    biome_fix:
+      run: pnpm exec biome check --write --staged
+    git_add_fixed:
+      run: git add {staged_files}
+
+pre-push:
+  commands:
+    biome_check:
+      run: pnpm exec biome check .
+
