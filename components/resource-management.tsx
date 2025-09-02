@@ -1,12 +1,12 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Users, Calendar, Clock, AlertTriangle } from "lucide-react"
+import { AlertTriangle, Calendar, Clock, Users } from 'lucide-react'
+import { useState } from 'react'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 interface Member {
   id: string
@@ -25,216 +25,216 @@ interface TaskAssignment {
   startDate: string
   endDate: string
   estimatedHours: number
-  priority: "high" | "medium" | "low"
-  status: "not-started" | "in-progress" | "completed"
+  priority: 'high' | 'medium' | 'low'
+  status: 'not-started' | 'in-progress' | 'completed'
 }
 
 interface WeeklyLoad {
   week: string
   load: number
-  status: "low" | "normal" | "high" | "overload"
+  status: 'low' | 'normal' | 'high' | 'overload'
 }
 
 const members: Member[] = [
   {
-    id: "1",
-    name: "田中太郎",
-    avatar: "田",
-    role: "プロジェクトマネージャー",
-    email: "tanaka@company.com",
+    id: '1',
+    name: '田中太郎',
+    avatar: '田',
+    role: 'プロジェクトマネージャー',
+    email: 'tanaka@company.com',
     weeklyCapacity: 40,
     currentLoad: 34,
   },
   {
-    id: "2",
-    name: "山田花子",
-    avatar: "山",
-    role: "システムエンジニア",
-    email: "yamada@company.com",
+    id: '2',
+    name: '山田花子',
+    avatar: '山',
+    role: 'システムエンジニア',
+    email: 'yamada@company.com',
     weeklyCapacity: 40,
     currentLoad: 37,
   },
   {
-    id: "3",
-    name: "佐藤次郎",
-    avatar: "佐",
-    role: "デザイナー",
-    email: "sato@company.com",
+    id: '3',
+    name: '佐藤次郎',
+    avatar: '佐',
+    role: 'デザイナー',
+    email: 'sato@company.com',
     weeklyCapacity: 40,
     currentLoad: 31,
   },
   {
-    id: "4",
-    name: "鈴木三郎",
-    avatar: "鈴",
-    role: "開発者",
-    email: "suzuki@company.com",
+    id: '4',
+    name: '鈴木三郎',
+    avatar: '鈴',
+    role: '開発者',
+    email: 'suzuki@company.com',
     weeklyCapacity: 40,
     currentLoad: 35,
   },
 ]
 
 const taskAssignments: Record<string, TaskAssignment[]> = {
-  "1": [
+  '1': [
     {
-      id: "t1",
-      taskName: "プロジェクト計画策定",
-      projectName: "新システム開発",
-      startDate: "2025-01-15",
-      endDate: "2025-01-20",
+      id: 't1',
+      taskName: 'プロジェクト計画策定',
+      projectName: '新システム開発',
+      startDate: '2025-01-15',
+      endDate: '2025-01-20',
       estimatedHours: 16,
-      priority: "high",
-      status: "in-progress",
+      priority: 'high',
+      status: 'in-progress',
     },
     {
-      id: "t2",
-      taskName: "要件レビュー",
-      projectName: "新システム開発",
-      startDate: "2025-01-21",
-      endDate: "2025-01-25",
+      id: 't2',
+      taskName: '要件レビュー',
+      projectName: '新システム開発',
+      startDate: '2025-01-21',
+      endDate: '2025-01-25',
       estimatedHours: 12,
-      priority: "medium",
-      status: "not-started",
+      priority: 'medium',
+      status: 'not-started',
     },
     {
-      id: "t3",
-      taskName: "進捗報告書作成",
-      projectName: "新システム開発",
-      startDate: "2025-01-26",
-      endDate: "2025-01-30",
+      id: 't3',
+      taskName: '進捗報告書作成',
+      projectName: '新システム開発',
+      startDate: '2025-01-26',
+      endDate: '2025-01-30',
       estimatedHours: 6,
-      priority: "low",
-      status: "not-started",
+      priority: 'low',
+      status: 'not-started',
     },
   ],
-  "2": [
+  '2': [
     {
-      id: "t4",
-      taskName: "データベース設計",
-      projectName: "新システム開発",
-      startDate: "2025-01-15",
-      endDate: "2025-01-25",
+      id: 't4',
+      taskName: 'データベース設計',
+      projectName: '新システム開発',
+      startDate: '2025-01-15',
+      endDate: '2025-01-25',
       estimatedHours: 24,
-      priority: "high",
-      status: "in-progress",
+      priority: 'high',
+      status: 'in-progress',
     },
     {
-      id: "t5",
-      taskName: "API仕様書作成",
-      projectName: "新システム開発",
-      startDate: "2025-01-26",
-      endDate: "2025-02-05",
+      id: 't5',
+      taskName: 'API仕様書作成',
+      projectName: '新システム開発',
+      startDate: '2025-01-26',
+      endDate: '2025-02-05',
       estimatedHours: 20,
-      priority: "medium",
-      status: "not-started",
+      priority: 'medium',
+      status: 'not-started',
     },
   ],
-  "3": [
+  '3': [
     {
-      id: "t6",
-      taskName: "UI/UXデザイン",
-      projectName: "新システム開発",
-      startDate: "2025-01-15",
-      endDate: "2025-01-30",
+      id: 't6',
+      taskName: 'UI/UXデザイン',
+      projectName: '新システム開発',
+      startDate: '2025-01-15',
+      endDate: '2025-01-30',
       estimatedHours: 32,
-      priority: "high",
-      status: "in-progress",
+      priority: 'high',
+      status: 'in-progress',
     },
   ],
-  "4": [
+  '4': [
     {
-      id: "t7",
-      taskName: "フロントエンド実装",
-      projectName: "新システム開発",
-      startDate: "2025-02-01",
-      endDate: "2025-02-20",
+      id: 't7',
+      taskName: 'フロントエンド実装',
+      projectName: '新システム開発',
+      startDate: '2025-02-01',
+      endDate: '2025-02-20',
       estimatedHours: 40,
-      priority: "high",
-      status: "not-started",
+      priority: 'high',
+      status: 'not-started',
     },
     {
-      id: "t8",
-      taskName: "単体テスト",
-      projectName: "新システム開発",
-      startDate: "2025-02-21",
-      endDate: "2025-02-28",
+      id: 't8',
+      taskName: '単体テスト',
+      projectName: '新システム開発',
+      startDate: '2025-02-21',
+      endDate: '2025-02-28',
       estimatedHours: 16,
-      priority: "medium",
-      status: "not-started",
+      priority: 'medium',
+      status: 'not-started',
     },
   ],
 }
 
 const weeklyLoads: Record<string, WeeklyLoad[]> = {
-  "1": [
-    { week: "第1週", load: 85, status: "normal" },
-    { week: "第2週", load: 92, status: "high" },
-    { week: "第3週", load: 78, status: "normal" },
-    { week: "第4週", load: 88, status: "normal" },
+  '1': [
+    { week: '第1週', load: 85, status: 'normal' },
+    { week: '第2週', load: 92, status: 'high' },
+    { week: '第3週', load: 78, status: 'normal' },
+    { week: '第4週', load: 88, status: 'normal' },
   ],
-  "2": [
-    { week: "第1週", load: 95, status: "high" },
-    { week: "第2週", load: 88, status: "normal" },
-    { week: "第3週", load: 102, status: "overload" },
-    { week: "第4週", load: 85, status: "normal" },
+  '2': [
+    { week: '第1週', load: 95, status: 'high' },
+    { week: '第2週', load: 88, status: 'normal' },
+    { week: '第3週', load: 102, status: 'overload' },
+    { week: '第4週', load: 85, status: 'normal' },
   ],
-  "3": [
-    { week: "第1週", load: 75, status: "normal" },
-    { week: "第2週", load: 82, status: "normal" },
-    { week: "第3週", load: 78, status: "normal" },
-    { week: "第4週", load: 80, status: "normal" },
+  '3': [
+    { week: '第1週', load: 75, status: 'normal' },
+    { week: '第2週', load: 82, status: 'normal' },
+    { week: '第3週', load: 78, status: 'normal' },
+    { week: '第4週', load: 80, status: 'normal' },
   ],
-  "4": [
-    { week: "第1週", load: 68, status: "low" },
-    { week: "第2週", load: 90, status: "normal" },
-    { week: "第3週", load: 95, status: "high" },
-    { week: "第4週", load: 88, status: "normal" },
+  '4': [
+    { week: '第1週', load: 68, status: 'low' },
+    { week: '第2週', load: 90, status: 'normal' },
+    { week: '第3週', load: 95, status: 'high' },
+    { week: '第4週', load: 88, status: 'normal' },
   ],
 }
 
 const getLoadColor = (status: string) => {
   switch (status) {
-    case "low":
-      return "bg-green-100 text-green-800"
-    case "normal":
-      return "bg-blue-100 text-blue-800"
-    case "high":
-      return "bg-yellow-100 text-yellow-800"
-    case "overload":
-      return "bg-red-100 text-red-800"
+    case 'low':
+      return 'bg-green-100 text-green-800'
+    case 'normal':
+      return 'bg-blue-100 text-blue-800'
+    case 'high':
+      return 'bg-yellow-100 text-yellow-800'
+    case 'overload':
+      return 'bg-red-100 text-red-800'
     default:
-      return "bg-gray-100 text-gray-800"
+      return 'bg-gray-100 text-gray-800'
   }
 }
 
 const getPriorityColor = (priority: string) => {
   switch (priority) {
-    case "high":
-      return "bg-red-100 text-red-800"
-    case "medium":
-      return "bg-yellow-100 text-yellow-800"
-    case "low":
-      return "bg-green-100 text-green-800"
+    case 'high':
+      return 'bg-red-100 text-red-800'
+    case 'medium':
+      return 'bg-yellow-100 text-yellow-800'
+    case 'low':
+      return 'bg-green-100 text-green-800'
     default:
-      return "bg-gray-100 text-gray-800"
+      return 'bg-gray-100 text-gray-800'
   }
 }
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case "completed":
-      return "bg-green-100 text-green-800"
-    case "in-progress":
-      return "bg-blue-100 text-blue-800"
-    case "not-started":
-      return "bg-gray-100 text-gray-800"
+    case 'completed':
+      return 'bg-green-100 text-green-800'
+    case 'in-progress':
+      return 'bg-blue-100 text-blue-800'
+    case 'not-started':
+      return 'bg-gray-100 text-gray-800'
     default:
-      return "bg-gray-100 text-gray-800"
+      return 'bg-gray-100 text-gray-800'
   }
 }
 
 export function ResourceManagement() {
-  const [selectedMember, setSelectedMember] = useState<string | null>(null)
+  const [_selectedMember, _setSelectedMember] = useState<string | null>(null)
 
   return (
     <div className="p-6 space-y-6">
@@ -283,12 +283,17 @@ export function ResourceManagement() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <Progress value={(member.currentLoad / member.weeklyCapacity) * 100} className="h-2" />
+                    <Progress
+                      value={(member.currentLoad / member.weeklyCapacity) * 100}
+                      className="h-2"
+                    />
                     <div className="grid grid-cols-4 gap-2">
                       {weeklyLoads[member.id]?.map((week) => (
                         <div key={week.week} className="text-center">
                           <div className="text-xs text-muted-foreground mb-1">{week.week}</div>
-                          <Badge className={`text-xs ${getLoadColor(week.status)}`}>{week.load}%</Badge>
+                          <Badge className={`text-xs ${getLoadColor(week.status)}`}>
+                            {week.load}%
+                          </Badge>
                         </div>
                       ))}
                     </div>
@@ -323,16 +328,28 @@ export function ResourceManagement() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {taskAssignments[member.id]?.map((task) => (
-                    <div key={task.id} className="p-3 border rounded-lg hover:bg-gray-50 cursor-move" draggable>
+                    <div
+                      key={task.id}
+                      className="p-3 border rounded-lg hover:bg-gray-50 cursor-move"
+                      draggable
+                    >
                       <div className="space-y-2">
                         <div className="font-medium text-sm">{task.taskName}</div>
                         <div className="text-xs text-muted-foreground">{task.projectName}</div>
                         <div className="flex items-center justify-between">
                           <Badge className={`text-xs ${getPriorityColor(task.priority)}`}>
-                            {task.priority === "high" ? "高" : task.priority === "medium" ? "中" : "低"}
+                            {task.priority === 'high'
+                              ? '高'
+                              : task.priority === 'medium'
+                                ? '中'
+                                : '低'}
                           </Badge>
                           <Badge className={`text-xs ${getStatusColor(task.status)}`}>
-                            {task.status === "completed" ? "完了" : task.status === "in-progress" ? "進行中" : "未着手"}
+                            {task.status === 'completed'
+                              ? '完了'
+                              : task.status === 'in-progress'
+                                ? '進行中'
+                                : '未着手'}
                           </Badge>
                         </div>
                         <div className="text-xs text-muted-foreground">
@@ -347,7 +364,9 @@ export function ResourceManagement() {
                   ))}
 
                   {(!taskAssignments[member.id] || taskAssignments[member.id].length === 0) && (
-                    <div className="text-center py-4 text-sm text-muted-foreground">割り当てタスクなし</div>
+                    <div className="text-center py-4 text-sm text-muted-foreground">
+                      割り当てタスクなし
+                    </div>
                   )}
                 </CardContent>
               </Card>

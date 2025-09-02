@@ -1,35 +1,35 @@
-"use client"
+'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { AlertTriangle, Clock, CheckCircle, TrendingUp } from "lucide-react"
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts"
+import { AlertTriangle, CheckCircle, Clock, TrendingUp } from 'lucide-react'
+import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
 
 const progressData = [
-  { name: "完了", value: 65, color: "#3b82f6" },
-  { name: "未完了", value: 35, color: "#e5e7eb" },
+  { name: '完了', value: 65, color: '#3b82f6' },
+  { name: '未完了', value: 35, color: '#e5e7eb' },
 ]
 
 const teamUtilizationData = [
-  { name: "田中", utilization: 85, avatar: "田" },
-  { name: "山田", utilization: 92, avatar: "山" },
-  { name: "佐藤", utilization: 78, avatar: "佐" },
-  { name: "鈴木", utilization: 88, avatar: "鈴" },
+  { name: '田中', utilization: 85, avatar: '田' },
+  { name: '山田', utilization: 92, avatar: '山' },
+  { name: '佐藤', utilization: 78, avatar: '佐' },
+  { name: '鈴木', utilization: 88, avatar: '鈴' },
 ]
 
 const upcomingTasks = [
-  { id: 1, name: "要件定義書作成", assignee: "山田", dueDate: "1/20", status: "進行中" },
-  { id: 2, name: "基本設計レビュー", assignee: "佐藤", dueDate: "1/22", status: "予定" },
-  { id: 3, name: "詳細設計書作成", assignee: "鈴木", dueDate: "1/24", status: "予定" },
-  { id: 4, name: "UI設計", assignee: "田中", dueDate: "1/25", status: "予定" },
-  { id: 5, name: "データベース設計", assignee: "山田", dueDate: "1/26", status: "予定" },
+  { id: 1, name: '要件定義書作成', assignee: '山田', dueDate: '1/20', status: '進行中' },
+  { id: 2, name: '基本設計レビュー', assignee: '佐藤', dueDate: '1/22', status: '予定' },
+  { id: 3, name: '詳細設計書作成', assignee: '鈴木', dueDate: '1/24', status: '予定' },
+  { id: 4, name: 'UI設計', assignee: '田中', dueDate: '1/25', status: '予定' },
+  { id: 5, name: 'データベース設計', assignee: '山田', dueDate: '1/26', status: '予定' },
 ]
 
 const delayedTasks = [
-  { id: 1, name: "ヒアリング資料作成", assignee: "田中", delay: "3日" },
-  { id: 2, name: "要件確認会議", assignee: "佐藤", delay: "1日" },
+  { id: 1, name: 'ヒアリング資料作成', assignee: '田中', delay: '3日' },
+  { id: 2, name: '要件確認会議', assignee: '佐藤', delay: '1日' },
 ]
 
 export function Dashboard() {
@@ -120,7 +120,10 @@ export function Dashboard() {
                   </div>
                   <div className="text-right">
                     <div className="text-xs text-muted-foreground">{task.dueDate}</div>
-                    <Badge variant={task.status === "進行中" ? "default" : "secondary"} className="text-xs">
+                    <Badge
+                      variant={task.status === '進行中' ? 'default' : 'secondary'}
+                      className="text-xs"
+                    >
                       {task.status}
                     </Badge>
                   </div>
@@ -173,7 +176,10 @@ export function Dashboard() {
           <CardContent>
             <div className="space-y-4">
               {teamUtilizationData.map((member) => (
-                <div key={member.name} className="space-y-2 hover:bg-gray-50 p-2 rounded transition-smooth">
+                <div
+                  key={member.name}
+                  className="space-y-2 hover:bg-gray-50 p-2 rounded transition-smooth"
+                >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Avatar className="h-6 w-6">
@@ -187,7 +193,12 @@ export function Dashboard() {
                     value={member.utilization}
                     className="h-2 transition-smooth"
                     style={{
-                      background: member.utilization > 90 ? "#fee2e2" : member.utilization > 80 ? "#fef3c7" : "#dcfce7",
+                      background:
+                        member.utilization > 90
+                          ? '#fee2e2'
+                          : member.utilization > 80
+                            ? '#fef3c7'
+                            : '#dcfce7',
                     }}
                   />
                 </div>

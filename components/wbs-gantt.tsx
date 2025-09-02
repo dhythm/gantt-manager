@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { ChevronDown, ChevronRight, Plus, AlertTriangle } from "lucide-react"
-import { TaskDetailModal } from "./task-detail-modal"
+import { AlertTriangle, ChevronDown, ChevronRight, Plus } from 'lucide-react'
+import { useState } from 'react'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { TaskDetailModal } from './task-detail-modal'
 
 interface Task {
   id: string
@@ -24,77 +24,77 @@ interface Task {
 
 const sampleTasks: Task[] = [
   {
-    id: "1",
-    name: "新システム開発",
-    assignee: "田中",
+    id: '1',
+    name: '新システム開発',
+    assignee: '田中',
     progress: 65,
-    startDate: "2025-01-01",
-    endDate: "2025-03-31",
+    startDate: '2025-01-01',
+    endDate: '2025-03-31',
     duration: 90,
     level: 0,
     expanded: true,
     children: [
       {
-        id: "1.1",
-        name: "要件定義フェーズ",
-        assignee: "山田",
+        id: '1.1',
+        name: '要件定義フェーズ',
+        assignee: '山田',
         progress: 100,
-        startDate: "2025-01-01",
-        endDate: "2025-01-20",
+        startDate: '2025-01-01',
+        endDate: '2025-01-20',
         duration: 20,
         level: 1,
         expanded: true,
         children: [
           {
-            id: "1.1.1",
-            name: "ヒアリング",
-            assignee: "田中",
+            id: '1.1.1',
+            name: 'ヒアリング',
+            assignee: '田中',
             progress: 100,
-            startDate: "2025-01-01",
-            endDate: "2025-01-10",
+            startDate: '2025-01-01',
+            endDate: '2025-01-10',
             duration: 10,
             level: 2,
           },
           {
-            id: "1.1.2",
-            name: "要件定義書作成",
-            assignee: "山田",
+            id: '1.1.2',
+            name: '要件定義書作成',
+            assignee: '山田',
             progress: 100,
-            startDate: "2025-01-11",
-            endDate: "2025-01-20",
+            startDate: '2025-01-11',
+            endDate: '2025-01-20',
             duration: 10,
             level: 2,
           },
         ],
       },
       {
-        id: "1.2",
-        name: "設計フェーズ",
-        assignee: "佐藤",
+        id: '1.2',
+        name: '設計フェーズ',
+        assignee: '佐藤',
         progress: 60,
-        startDate: "2025-01-21",
-        endDate: "2025-02-20",
+        startDate: '2025-01-21',
+        endDate: '2025-02-20',
         duration: 30,
         level: 1,
         expanded: true,
         children: [
           {
-            id: "1.2.1",
-            name: "基本設計",
-            assignee: "佐藤",
+            id: '1.2.1',
+            name: '基本設計',
+            assignee: '佐藤',
             progress: 80,
-            startDate: "2025-01-21",
-            endDate: "2025-02-05",
+            startDate: '2025-01-21',
+            endDate: '2025-02-05',
             duration: 15,
             level: 2,
           },
           {
-            id: "1.2.2",
-            name: "詳細設計",
-            assignee: "鈴木",
+            id: '1.2.2',
+            name: '詳細設計',
+            assignee: '鈴木',
             progress: 40,
-            startDate: "2025-02-06",
-            endDate: "2025-02-20",
+            startDate: '2025-02-06',
+            endDate: '2025-02-20',
             duration: 15,
             level: 2,
             isOverdue: true,
@@ -102,43 +102,43 @@ const sampleTasks: Task[] = [
         ],
       },
       {
-        id: "1.3",
-        name: "開発フェーズ",
-        assignee: "田中",
+        id: '1.3',
+        name: '開発フェーズ',
+        assignee: '田中',
         progress: 20,
-        startDate: "2025-02-21",
-        endDate: "2025-03-31",
+        startDate: '2025-02-21',
+        endDate: '2025-03-31',
         duration: 38,
         level: 1,
         expanded: true,
         children: [
           {
-            id: "1.3.1",
-            name: "フロントエンド開発",
-            assignee: "田中",
+            id: '1.3.1',
+            name: 'フロントエンド開発',
+            assignee: '田中',
             progress: 30,
-            startDate: "2025-02-21",
-            endDate: "2025-03-15",
+            startDate: '2025-02-21',
+            endDate: '2025-03-15',
             duration: 22,
             level: 2,
           },
           {
-            id: "1.3.2",
-            name: "バックエンド開発",
-            assignee: "山田",
+            id: '1.3.2',
+            name: 'バックエンド開発',
+            assignee: '山田',
             progress: 15,
-            startDate: "2025-02-21",
-            endDate: "2025-03-20",
+            startDate: '2025-02-21',
+            endDate: '2025-03-20',
             duration: 27,
             level: 2,
           },
           {
-            id: "1.3.3",
-            name: "テスト",
-            assignee: "佐藤",
+            id: '1.3.3',
+            name: 'テスト',
+            assignee: '佐藤',
             progress: 0,
-            startDate: "2025-03-21",
-            endDate: "2025-03-31",
+            startDate: '2025-03-21',
+            endDate: '2025-03-31',
             duration: 10,
             level: 2,
           },
@@ -148,12 +148,12 @@ const sampleTasks: Task[] = [
   },
 ]
 
-const timeScale = ["1月", "2月", "3月"]
+const timeScale = ['1月', '2月', '3月']
 const weeks = Array.from({ length: 12 }, (_, i) => `第${i + 1}週`)
 
 export function WBSGantt() {
   const [tasks, setTasks] = useState<Task[]>(sampleTasks)
-  const [viewMode, setViewMode] = useState<"month" | "week" | "day">("week")
+  const [viewMode, setViewMode] = useState<'month' | 'week' | 'day'>('week')
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -190,7 +190,7 @@ export function WBSGantt() {
 
   const getTaskPosition = (startDate: string, duration: number) => {
     const start = new Date(startDate)
-    const startOfYear = new Date("2025-01-01")
+    const startOfYear = new Date('2025-01-01')
     const daysDiff = Math.floor((start.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24))
     const leftPercent = (daysDiff / 90) * 100
     const widthPercent = (duration / 90) * 100
@@ -199,7 +199,7 @@ export function WBSGantt() {
 
   const getTodayPosition = () => {
     const today = new Date()
-    const startOfYear = new Date("2025-01-01")
+    const startOfYear = new Date('2025-01-01')
     const daysDiff = Math.floor((today.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24))
     return (daysDiff / 90) * 100
   }
@@ -211,7 +211,7 @@ export function WBSGantt() {
 
   const handleTaskSave = (taskData: any) => {
     // タスク更新のロジック
-    console.log("Task saved:", taskData)
+    console.log('Task saved:', taskData)
   }
 
   return (
@@ -222,25 +222,25 @@ export function WBSGantt() {
           <h2 className="text-2xl font-bold">WBS/ガントチャート</h2>
           <div className="flex items-center gap-2">
             <Button
-              variant={viewMode === "month" ? "default" : "outline"}
+              variant={viewMode === 'month' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setViewMode("month")}
+              onClick={() => setViewMode('month')}
               className="transition-smooth"
             >
               月
             </Button>
             <Button
-              variant={viewMode === "week" ? "default" : "outline"}
+              variant={viewMode === 'week' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setViewMode("week")}
+              onClick={() => setViewMode('week')}
               className="transition-smooth"
             >
               週
             </Button>
             <Button
-              variant={viewMode === "day" ? "default" : "outline"}
+              variant={viewMode === 'day' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setViewMode("day")}
+              onClick={() => setViewMode('day')}
               className="transition-smooth"
             >
               日
@@ -256,7 +256,11 @@ export function WBSGantt() {
           <div className="p-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-lg">WBS構造</h3>
-              <Button size="sm" variant="outline" className="hover-lift transition-smooth bg-transparent">
+              <Button
+                size="sm"
+                variant="outline"
+                className="hover-lift transition-smooth bg-transparent"
+              >
                 <Plus className="h-4 w-4 mr-1" />
                 タスクを追加
               </Button>
@@ -269,9 +273,8 @@ export function WBSGantt() {
                   className="flex items-center py-2 px-2 hover:bg-gray-50 rounded-md group cursor-pointer transition-smooth focus-ring"
                   style={{ paddingLeft: `${task.level * 20 + 8}px` }}
                   onClick={() => handleTaskClick(task)}
-                  tabIndex={0}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
+                    if (e.key === 'Enter' || e.key === ' ') {
                       handleTaskClick(task)
                     }
                   }}
@@ -287,7 +290,11 @@ export function WBSGantt() {
                           toggleTaskExpansion(task.id)
                         }}
                       >
-                        {task.expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+                        {task.expanded ? (
+                          <ChevronDown className="h-3 w-3" />
+                        ) : (
+                          <ChevronRight className="h-3 w-3" />
+                        )}
                       </Button>
                     ) : (
                       <div className="w-6 mr-2" />
@@ -326,8 +333,11 @@ export function WBSGantt() {
             <div className="bg-white border-b sticky top-0 z-10">
               <div className="h-12 flex items-center px-4 border-b">
                 <div className="flex-1 flex">
-                  {timeScale.map((month, index) => (
-                    <div key={month} className="flex-1 text-center text-sm font-medium border-r last:border-r-0">
+                  {timeScale.map((month, _index) => (
+                    <div
+                      key={month}
+                      className="flex-1 text-center text-sm font-medium border-r last:border-r-0"
+                    >
                       {month}
                     </div>
                   ))}
@@ -335,7 +345,7 @@ export function WBSGantt() {
               </div>
               <div className="h-8 flex items-center px-4">
                 <div className="flex-1 flex">
-                  {weeks.map((week, index) => (
+                  {weeks.map((week, _index) => (
                     <div
                       key={week}
                       className="flex-1 text-center text-xs text-muted-foreground border-r last:border-r-0"
@@ -355,7 +365,7 @@ export function WBSGantt() {
                 style={{ left: `${getTodayPosition()}%` }}
               />
 
-              {flatTasks.map((task, index) => {
+              {flatTasks.map((task, _index) => {
                 const position = getTaskPosition(task.startDate, task.duration)
                 return (
                   <div
@@ -368,18 +378,19 @@ export function WBSGantt() {
                         className="absolute h-6 rounded-md flex items-center px-2 text-xs text-white font-medium shadow-sm cursor-pointer hover:shadow-md transition-smooth focus-ring"
                         style={{
                           ...position,
-                          backgroundColor: task.progress === 100 ? "#3b82f6" : "#94a3b8",
+                          backgroundColor: task.progress === 100 ? '#3b82f6' : '#94a3b8',
                           background: `linear-gradient(to right, #3b82f6 ${task.progress}%, #e2e8f0 ${task.progress}%)`,
                         }}
                         onClick={() => handleTaskClick(task)}
-                        tabIndex={0}
                         onKeyDown={(e) => {
-                          if (e.key === "Enter" || e.key === " ") {
+                          if (e.key === 'Enter' || e.key === ' ') {
                             handleTaskClick(task)
                           }
                         }}
                       >
-                        <span className="truncate text-black mix-blend-difference">{task.name}</span>
+                        <span className="truncate text-black mix-blend-difference">
+                          {task.name}
+                        </span>
                       </div>
                     </div>
                   </div>

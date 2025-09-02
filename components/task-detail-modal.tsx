@@ -1,16 +1,22 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Calendar, Clock, User, FileText, MessageSquare, Link } from "lucide-react"
+import { Calendar, Clock, FileText, Link, MessageSquare, User } from 'lucide-react'
+import { useState } from 'react'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Slider } from '@/components/ui/slider'
+import { Textarea } from '@/components/ui/textarea'
 
 interface TaskDetailModalProps {
   isOpen: boolean
@@ -25,8 +31,8 @@ interface TaskDetailModalProps {
     endDate: string
     estimatedHours: number
     actualHours: number
-    priority: "high" | "medium" | "low"
-    status: "not-started" | "in-progress" | "completed"
+    priority: 'high' | 'medium' | 'low'
+    status: 'not-started' | 'in-progress' | 'completed'
     dependencies?: string[]
     comments?: Array<{
       id: string
@@ -39,35 +45,35 @@ interface TaskDetailModalProps {
 }
 
 const teamMembers = [
-  { id: "1", name: "田中太郎", avatar: "田" },
-  { id: "2", name: "山田花子", avatar: "山" },
-  { id: "3", name: "佐藤次郎", avatar: "佐" },
-  { id: "4", name: "鈴木三郎", avatar: "鈴" },
+  { id: '1', name: '田中太郎', avatar: '田' },
+  { id: '2', name: '山田花子', avatar: '山' },
+  { id: '3', name: '佐藤次郎', avatar: '佐' },
+  { id: '4', name: '鈴木三郎', avatar: '鈴' },
 ]
 
 const availableTasks = [
-  { id: "task1", name: "要件定義書作成" },
-  { id: "task2", name: "基本設計" },
-  { id: "task3", name: "詳細設計" },
-  { id: "task4", name: "データベース設計" },
+  { id: 'task1', name: '要件定義書作成' },
+  { id: 'task2', name: '基本設計' },
+  { id: 'task3', name: '詳細設計' },
+  { id: 'task4', name: 'データベース設計' },
 ]
 
 export function TaskDetailModal({ isOpen, onClose, task, onSave }: TaskDetailModalProps) {
   const [formData, setFormData] = useState({
-    name: task?.name || "",
-    description: task?.description || "",
-    assignee: task?.assignee || "",
+    name: task?.name || '',
+    description: task?.description || '',
+    assignee: task?.assignee || '',
     progress: task?.progress || 0,
-    startDate: task?.startDate || "",
-    endDate: task?.endDate || "",
+    startDate: task?.startDate || '',
+    endDate: task?.endDate || '',
     estimatedHours: task?.estimatedHours || 0,
     actualHours: task?.actualHours || 0,
-    priority: task?.priority || "medium",
-    status: task?.status || "not-started",
+    priority: task?.priority || 'medium',
+    status: task?.status || 'not-started',
     dependencies: task?.dependencies || [],
   })
 
-  const [newComment, setNewComment] = useState("")
+  const [newComment, setNewComment] = useState('')
 
   const handleSave = () => {
     onSave(formData)
@@ -77,33 +83,33 @@ export function TaskDetailModal({ isOpen, onClose, task, onSave }: TaskDetailMod
   const handleAddComment = () => {
     if (newComment.trim()) {
       // コメント追加のロジック
-      setNewComment("")
+      setNewComment('')
     }
   }
 
   const getPriorityLabel = (priority: string) => {
     switch (priority) {
-      case "high":
-        return "高"
-      case "medium":
-        return "中"
-      case "low":
-        return "低"
+      case 'high':
+        return '高'
+      case 'medium':
+        return '中'
+      case 'low':
+        return '低'
       default:
-        return "中"
+        return '中'
     }
   }
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case "not-started":
-        return "未着手"
-      case "in-progress":
-        return "進行中"
-      case "completed":
-        return "完了"
+      case 'not-started':
+        return '未着手'
+      case 'in-progress':
+        return '進行中'
+      case 'completed':
+        return '完了'
       default:
-        return "未着手"
+        return '未着手'
     }
   }
 
@@ -179,7 +185,12 @@ export function TaskDetailModal({ isOpen, onClose, task, onSave }: TaskDetailMod
                   id="estimatedHours"
                   type="number"
                   value={formData.estimatedHours}
-                  onChange={(e) => setFormData({ ...formData, estimatedHours: Number.parseInt(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      estimatedHours: Number.parseInt(e.target.value, 10) || 0,
+                    })
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -188,7 +199,12 @@ export function TaskDetailModal({ isOpen, onClose, task, onSave }: TaskDetailMod
                   id="actualHours"
                   type="number"
                   value={formData.actualHours}
-                  onChange={(e) => setFormData({ ...formData, actualHours: Number.parseInt(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      actualHours: Number.parseInt(e.target.value, 10) || 0,
+                    })
+                  }
                 />
               </div>
             </div>
@@ -352,11 +368,11 @@ export function TaskDetailModal({ isOpen, onClose, task, onSave }: TaskDetailMod
                   <span>優先度:</span>
                   <Badge
                     variant={
-                      formData.priority === "high"
-                        ? "destructive"
-                        : formData.priority === "medium"
-                          ? "default"
-                          : "secondary"
+                      formData.priority === 'high'
+                        ? 'destructive'
+                        : formData.priority === 'medium'
+                          ? 'default'
+                          : 'secondary'
                     }
                   >
                     {getPriorityLabel(formData.priority)}
@@ -364,7 +380,7 @@ export function TaskDetailModal({ isOpen, onClose, task, onSave }: TaskDetailMod
                 </div>
                 <div className="flex justify-between">
                   <span>ステータス:</span>
-                  <Badge variant={formData.status === "completed" ? "default" : "secondary"}>
+                  <Badge variant={formData.status === 'completed' ? 'default' : 'secondary'}>
                     {getStatusLabel(formData.status)}
                   </Badge>
                 </div>

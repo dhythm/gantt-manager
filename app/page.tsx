@@ -1,27 +1,27 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Header } from "@/components/header"
-import { Sidebar } from "@/components/sidebar"
-import { Dashboard } from "@/components/dashboard"
-import { WBSGantt } from "@/components/wbs-gantt"
-import { ResourceManagement } from "@/components/resource-management"
+import { useState } from 'react'
+import { Dashboard } from '@/components/dashboard'
+import { Header } from '@/components/header'
+import { ResourceManagement } from '@/components/resource-management'
+import { Sidebar } from '@/components/sidebar'
+import { WBSGantt } from '@/components/wbs-gantt'
 
 export default function ProjectManagementTool() {
-  const [currentView, setCurrentView] = useState("dashboard")
+  const [currentView, setCurrentView] = useState('dashboard')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   const renderMainContent = () => {
     switch (currentView) {
-      case "dashboard":
+      case 'dashboard':
         return <Dashboard />
-      case "wbs-gantt":
+      case 'wbs-gantt':
         return <WBSGantt />
-      case "resources":
+      case 'resources':
         return <ResourceManagement />
-      case "reports":
+      case 'reports':
         return <div className="p-6">レポート機能（開発予定）</div>
-      case "settings":
+      case 'settings':
         return <div className="p-6">設定画面（開発予定）</div>
       default:
         return <Dashboard />
@@ -38,7 +38,9 @@ export default function ProjectManagementTool() {
           collapsed={sidebarCollapsed}
           onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
-        <main className={`flex-1 overflow-auto transition-all duration-300 ${sidebarCollapsed ? "ml-16" : "ml-64"}`}>
+        <main
+          className={`flex-1 overflow-auto transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}
+        >
           {renderMainContent()}
         </main>
       </div>

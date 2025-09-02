@@ -8,7 +8,12 @@ vi.mock('@/components/header', () => ({
 }))
 
 vi.mock('@/components/sidebar', () => ({
-  Sidebar: ({ currentView, onViewChange, collapsed, onToggleCollapse }: {
+  Sidebar: ({
+    currentView,
+    onViewChange,
+    collapsed,
+    onToggleCollapse,
+  }: {
     currentView: string
     onViewChange: (view: string) => void
     collapsed: boolean
@@ -16,11 +21,21 @@ vi.mock('@/components/sidebar', () => ({
   }) => (
     <div data-testid="sidebar">
       <div>Current View: {currentView}</div>
-      <button type="button" onClick={() => onViewChange('wbs-gantt')}>WBS-Gantt</button>
-      <button type="button" onClick={() => onViewChange('resources')}>Resources</button>
-      <button type="button" onClick={() => onViewChange('reports')}>Reports</button>
-      <button type="button" onClick={() => onViewChange('settings')}>Settings</button>
-      <button type="button" onClick={onToggleCollapse}>Toggle Collapse</button>
+      <button type="button" onClick={() => onViewChange('wbs-gantt')}>
+        WBS-Gantt
+      </button>
+      <button type="button" onClick={() => onViewChange('resources')}>
+        Resources
+      </button>
+      <button type="button" onClick={() => onViewChange('reports')}>
+        Reports
+      </button>
+      <button type="button" onClick={() => onViewChange('settings')}>
+        Settings
+      </button>
+      <button type="button" onClick={onToggleCollapse}>
+        Toggle Collapse
+      </button>
       <div>{collapsed ? 'Collapsed' : 'Expanded'}</div>
     </div>
   ),
