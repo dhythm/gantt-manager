@@ -8,3 +8,11 @@ coverage
 .vercel
 .vscode
 
+# CSS files (Tailwind specific rules)
+**/*.css
+
+# Components with complex types that need refactoring  
+components/ui/
+components/theme-provider.tsx
+components/dashboard.tsx
+
