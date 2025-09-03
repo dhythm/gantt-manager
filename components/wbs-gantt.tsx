@@ -56,8 +56,8 @@ const sampleTasks: Task[] = [
         id: '1',
         author: '田中',
         content: 'プロジェクト全体の進捗は順調です。',
-        timestamp: '2025-01-15 10:00'
-      }
+        timestamp: '2025-01-15 10:00',
+      },
     ],
     children: [
       {
@@ -81,8 +81,8 @@ const sampleTasks: Task[] = [
             id: '2',
             author: '山田',
             content: '要件定義が完了しました。',
-            timestamp: '2025-01-20 15:30'
-          }
+            timestamp: '2025-01-20 15:30',
+          },
         ],
         children: [
           {
@@ -100,7 +100,7 @@ const sampleTasks: Task[] = [
             status: 'completed',
             dependencies: [],
             level: 2,
-            comments: []
+            comments: [],
           },
           {
             id: '1.1.2',
@@ -117,7 +117,7 @@ const sampleTasks: Task[] = [
             status: 'completed',
             dependencies: ['1.1.1'],
             level: 2,
-            comments: []
+            comments: [],
           },
         ],
       },
@@ -154,7 +154,7 @@ const sampleTasks: Task[] = [
             status: 'in-progress',
             dependencies: [],
             level: 2,
-            comments: []
+            comments: [],
           },
           {
             id: '1.2.2',
@@ -177,9 +177,9 @@ const sampleTasks: Task[] = [
                 id: '3',
                 author: '鈴木',
                 content: '詳細設計でいくつか課題が見つかりました。',
-                timestamp: '2025-02-10 14:20'
-              }
-            ]
+                timestamp: '2025-02-10 14:20',
+              },
+            ],
           },
         ],
       },
@@ -216,7 +216,7 @@ const sampleTasks: Task[] = [
             status: 'not-started',
             dependencies: [],
             level: 2,
-            comments: []
+            comments: [],
           },
           {
             id: '1.3.2',
@@ -233,7 +233,7 @@ const sampleTasks: Task[] = [
             status: 'not-started',
             dependencies: [],
             level: 2,
-            comments: []
+            comments: [],
           },
           {
             id: '1.3.3',
@@ -250,7 +250,7 @@ const sampleTasks: Task[] = [
             status: 'not-started',
             dependencies: ['1.3.1', '1.3.2'],
             level: 2,
-            comments: []
+            comments: [],
           },
         ],
       },
@@ -261,8 +261,55 @@ const sampleTasks: Task[] = [
 const timeScale = ['1月', '2月', '3月']
 const weeks = Array.from({ length: 12 }, (_, i) => `第${i + 1}週`)
 
+// 文字列の%を数値化
+const parsePercent = (v: string) => Number.parseFloat(v.replace('%', '')) || 0
+
+// タスクのツリーを深く更新
+function updateTaskById(tasks: Task[], id: string, updater: (t: Task) => Task): Task[] {
+  return tasks.map((t) => {
+    if (t.id === id) return updater(t)
+    if (t.children) return { ...t, children: updateTaskById(t.children, id, updater) }
+    return t
+  })
+}
+
+// 親タスクの進捗ロールアップ（加重平均: estimatedHours -> duration -> 件数）
+function rollupProgress(task: Task): Task {
+  if (!task.children || task.children.length === 0) return task
+  const children = task.children.map(rollupProgress)
+  const hasEstimated = children.some((c) => (c.estimatedHours ?? 0) > 0)
+  const hasDuration = children.some((c) => (c.duration ?? 0) > 0)
+
+  let totalWeight = 0
+  let acc = 0
+  for (const c of children) {
+    const w = hasEstimated ? c.estimatedHours || 0 : hasDuration ? c.duration || 0 : 1
+    totalWeight += w
+    acc += (c.progress || 0) * w
+  }
+  const progress = totalWeight > 0 ? Math.round((acc / totalWeight) * 100) / 100 : 0
+  return { ...task, children, progress }
+}
+
+// 期限超過を自動判定
+function markOverdue(task: Task, today: Date): Task {
+  const isDone = task.progress >= 100
+  const end = task.endDate ? new Date(task.endDate) : null
+  const startOfToday = new Date(today.toDateString()).getTime()
+  const overdue = !!(end && !isDone && end.getTime() < startOfToday)
+  const children = task.children?.map((c) => markOverdue(c, today))
+  return { ...task, isOverdue: overdue, ...(children ? { children } : {}) }
+}
+
+// ツリー全体の再計算（ロールアップ→期限超過）
+function recalc(tasks: Task[]): Task[] {
+  const rolled = tasks.map(rollupProgress)
+  const today = new Date()
+  return rolled.map((t) => markOverdue(t, today))
+}
+
 export function WBSGantt() {
-  const [tasks, setTasks] = useState<Task[]>(sampleTasks)
+  const [tasks, setTasks] = useState<Task[]>(() => recalc(sampleTasks))
   const [viewMode, setViewMode] = useState<'month' | 'week' | 'day'>('week')
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -307,6 +354,11 @@ export function WBSGantt() {
     return { left: `${leftPercent}%`, width: `${widthPercent}%` }
   }
 
+  const getTaskPositionPercent = (startDate: string, duration: number) => {
+    const pos = getTaskPosition(startDate, duration)
+    return { left: parsePercent(pos.left), width: parsePercent(pos.width) }
+  }
+
   const getTodayPosition = () => {
     const today = new Date()
     const startOfYear = new Date('2025-01-01')
@@ -320,8 +372,23 @@ export function WBSGantt() {
   }
 
   const handleTaskSave = (taskData: any) => {
-    // タスク更新のロジック
-    console.log('Task saved:', taskData)
+    if (!selectedTask) return
+    const updated = updateTaskById(tasks, selectedTask.id, (t) => ({
+      ...t,
+      name: taskData.name ?? t.name,
+      description: taskData.description ?? t.description,
+      assignee: taskData.assignee ?? t.assignee,
+      progress: typeof taskData.progress === 'number' ? taskData.progress : t.progress,
+      startDate: taskData.startDate || t.startDate,
+      endDate: taskData.endDate || t.endDate,
+      estimatedHours:
+        typeof taskData.estimatedHours === 'number' ? taskData.estimatedHours : t.estimatedHours,
+      actualHours: typeof taskData.actualHours === 'number' ? taskData.actualHours : t.actualHours,
+      priority: taskData.priority || t.priority,
+      status: taskData.status || t.status,
+      dependencies: taskData.dependencies || t.dependencies,
+    }))
+    setTasks(recalc(updated))
   }
 
   return (
@@ -483,29 +550,103 @@ export function WBSGantt() {
                     className="h-12 flex items-center px-4 border-b border-gray-100 relative hover:bg-gray-50 transition-smooth"
                   >
                     <div className="flex-1 relative">
-                      {/* ガントバー */}
-                      <div
-                        className="absolute h-6 rounded-md flex items-center px-2 text-xs text-white font-medium shadow-sm cursor-pointer hover:shadow-md transition-smooth focus-ring"
-                        style={{
-                          ...position,
-                          backgroundColor: task.progress === 100 ? '#3b82f6' : '#94a3b8',
-                          background: `linear-gradient(to right, #3b82f6 ${task.progress}%, #e2e8f0 ${task.progress}%)`,
-                        }}
-                        onClick={() => handleTaskClick(task)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            handleTaskClick(task)
-                          }
-                        }}
-                      >
-                        <span className="truncate text-black mix-blend-difference">
-                          {task.name}
-                        </span>
-                      </div>
+                      {/* マイルストーン or ガントバー */}
+                      {task.isMilestone ? (
+                        <div
+                          className="absolute h-3 w-3 rotate-45 bg-blue-500 shadow-sm cursor-pointer hover:shadow-md transition-smooth focus-ring"
+                          style={{
+                            left: position.left,
+                            width: '12px',
+                            transform: 'translateX(-50%) rotate(45deg)',
+                          }}
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => handleTaskClick(task)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') handleTaskClick(task)
+                          }}
+                          aria-label={`${task.name} マイルストーン`}
+                        />
+                      ) : (
+                        <div
+                          className="absolute h-6 rounded-md flex items-center px-2 text-xs text-white font-medium shadow-sm cursor-pointer hover:shadow-md transition-smooth focus-ring"
+                          style={{
+                            ...position,
+                            backgroundColor: task.progress === 100 ? '#3b82f6' : '#94a3b8',
+                            background: `linear-gradient(to right, #3b82f6 ${task.progress}%, #e2e8f0 ${task.progress}%)`,
+                          }}
+                          onClick={() => handleTaskClick(task)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              handleTaskClick(task)
+                            }
+                          }}
+                        >
+                          <span className="truncate text-black mix-blend-difference">
+                            {task.name}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )
               })}
+
+              {/* 依存関係の矢印（簡易） */}
+              {(() => {
+                const ROW_HEIGHT = 48
+                const height = flatTasks.length * ROW_HEIGHT
+                return (
+                  <svg
+                    className="absolute inset-0 pointer-events-none"
+                    width="100%"
+                    height={height}
+                    viewBox={`0 0 100 ${height}`}
+                    preserveAspectRatio="none"
+                  >
+                    <defs>
+                      <marker
+                        id="arrow"
+                        markerWidth="6"
+                        markerHeight="6"
+                        refX="6"
+                        refY="3"
+                        orient="auto"
+                      >
+                        <path d="M0,0 L6,3 L0,6 z" fill="#94a3b8" />
+                      </marker>
+                    </defs>
+                    {flatTasks.flatMap((task, idx) => {
+                      if (!task.dependencies || task.dependencies.length === 0) return []
+                      return task.dependencies
+                        .map((depId) => {
+                          const fromIdx = flatTasks.findIndex((t) => t.id === depId)
+                          if (fromIdx === -1) return null
+                          const fromTask = flatTasks[fromIdx]
+                          const from = getTaskPositionPercent(fromTask.startDate, fromTask.duration)
+                          const to = getTaskPositionPercent(task.startDate, task.duration)
+                          const x1 = from.left + from.width
+                          const x2 = to.left
+                          const y1 = fromIdx * ROW_HEIGHT + ROW_HEIGHT / 2
+                          const y2 = idx * ROW_HEIGHT + ROW_HEIGHT / 2
+                          const midX = (x1 + x2) / 2
+                          const d = `M ${x1} ${y1} L ${midX} ${y1} L ${midX} ${y2} L ${x2} ${y2}`
+                          return (
+                            <path
+                              key={`${task.id}-${depId}`}
+                              d={d}
+                              fill="none"
+                              stroke="#94a3b8"
+                              strokeWidth="1.5"
+                              markerEnd="url(#arrow)"
+                            />
+                          )
+                        })
+                        .filter(Boolean) as JSX.Element[]
+                    })}
+                  </svg>
+                )
+              })()}
             </div>
           </div>
         </div>

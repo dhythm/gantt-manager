@@ -1,7 +1,18 @@
 'use client'
 
 import { AlertTriangle, CheckCircle, Clock, TrendingUp } from 'lucide-react'
-import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts'
+import {
+  CartesianGrid,
+  Cell,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -30,6 +41,20 @@ const upcomingTasks = [
 const delayedTasks = [
   { id: 1, name: 'ヒアリング資料作成', assignee: '田中', delay: '3日' },
   { id: 2, name: '要件確認会議', assignee: '佐藤', delay: '1日' },
+]
+
+const burndownData = [
+  { day: '1/15', ideal: 100, actual: 100 },
+  { day: '1/16', ideal: 90, actual: 92 },
+  { day: '1/17', ideal: 80, actual: 85 },
+  { day: '1/18', ideal: 70, actual: 75 },
+  { day: '1/19', ideal: 60, actual: 64 },
+  { day: '1/20', ideal: 50, actual: 58 },
+  { day: '1/21', ideal: 40, actual: 45 },
+  { day: '1/22', ideal: 30, actual: 35 },
+  { day: '1/23', ideal: 20, actual: 25 },
+  { day: '1/24', ideal: 10, actual: 12 },
+  { day: '1/25', ideal: 0, actual: 5 },
 ]
 
 export function Dashboard() {
@@ -213,6 +238,42 @@ export function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* バーンダウンチャート */}
+      <Card className="hover-lift transition-smooth">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Clock className="h-5 w-5 text-purple-500" />
+            バーンダウンチャート
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={burndownData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="day" />
+                <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
+                <Tooltip formatter={(v: number) => `${v}%`} />
+                <Line
+                  type="monotone"
+                  dataKey="ideal"
+                  stroke="#94a3b8"
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="actual"
+                  stroke="#3b82f6"
+                  strokeWidth={3}
+                  dot={{ r: 2 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

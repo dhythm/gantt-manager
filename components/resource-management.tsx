@@ -272,8 +272,16 @@ export function ResourceManagement() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-sm font-medium">
-                        稼働率: {Math.round((member.currentLoad / member.weeklyCapacity) * 100)}%
+                      <div className="flex items-center justify-end gap-2 text-sm font-medium">
+                        {Math.round((member.currentLoad / member.weeklyCapacity) * 100) >= 80 && (
+                          <span className="inline-flex items-center text-destructive">
+                            <AlertTriangle className="h-4 w-4 mr-1" />
+                            高負荷
+                          </span>
+                        )}
+                        <span>
+                          稼働率: {Math.round((member.currentLoad / member.weeklyCapacity) * 100)}%
+                        </span>
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {member.currentLoad}h / {member.weeklyCapacity}h
