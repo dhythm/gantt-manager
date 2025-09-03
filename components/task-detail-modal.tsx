@@ -1,7 +1,7 @@
 'use client'
 
 import { Calendar, Clock, FileText, Link, MessageSquare, User } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -18,29 +18,37 @@ import {
 import { Slider } from '@/components/ui/slider'
 import { Textarea } from '@/components/ui/textarea'
 
+interface Task {
+  id: string
+  name: string
+  description?: string
+  assignee: string
+  progress: number
+  startDate: string
+  endDate: string
+  duration: number
+  estimatedHours: number
+  actualHours: number
+  priority: 'high' | 'medium' | 'low'
+  status: 'not-started' | 'in-progress' | 'completed'
+  dependencies?: string[]
+  children?: Task[]
+  expanded?: boolean
+  level: number
+  isOverdue?: boolean
+  isMilestone?: boolean
+  comments?: Array<{
+    id: string
+    author: string
+    content: string
+    timestamp: string
+  }>
+}
+
 interface TaskDetailModalProps {
   isOpen: boolean
   onClose: () => void
-  task?: {
-    id: string
-    name: string
-    description?: string
-    assignee: string
-    progress: number
-    startDate: string
-    endDate: string
-    estimatedHours: number
-    actualHours: number
-    priority: 'high' | 'medium' | 'low'
-    status: 'not-started' | 'in-progress' | 'completed'
-    dependencies?: string[]
-    comments?: Array<{
-      id: string
-      author: string
-      content: string
-      timestamp: string
-    }>
-  }
+  task?: Task | null
   onSave: (taskData: any) => void
 }
 
@@ -74,6 +82,40 @@ export function TaskDetailModal({ isOpen, onClose, task, onSave }: TaskDetailMod
   })
 
   const [newComment, setNewComment] = useState('')
+
+  // taskプロパティが変更された時にformDataを更新
+  useEffect(() => {
+    if (task) {
+      setFormData({
+        name: task.name || '',
+        description: task.description || '',
+        assignee: task.assignee || '',
+        progress: task.progress || 0,
+        startDate: task.startDate || '',
+        endDate: task.endDate || '',
+        estimatedHours: task.estimatedHours || 0,
+        actualHours: task.actualHours || 0,
+        priority: task.priority || 'medium',
+        status: task.status || 'not-started',
+        dependencies: task.dependencies || [],
+      })
+    } else {
+      // taskがnullの場合はデフォルト値でリセット
+      setFormData({
+        name: '',
+        description: '',
+        assignee: '',
+        progress: 0,
+        startDate: '',
+        endDate: '',
+        estimatedHours: 0,
+        actualHours: 0,
+        priority: 'medium',
+        status: 'not-started',
+        dependencies: [],
+      })
+    }
+  }, [task])
 
   const handleSave = () => {
     onSave(formData)

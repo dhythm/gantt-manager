@@ -10,137 +10,247 @@ import { TaskDetailModal } from './task-detail-modal'
 interface Task {
   id: string
   name: string
+  description?: string
   assignee: string
   progress: number
   startDate: string
   endDate: string
   duration: number
+  estimatedHours: number
+  actualHours: number
+  priority: 'high' | 'medium' | 'low'
+  status: 'not-started' | 'in-progress' | 'completed'
+  dependencies?: string[]
   children?: Task[]
   expanded?: boolean
   level: number
   isOverdue?: boolean
   isMilestone?: boolean
+  comments?: Array<{
+    id: string
+    author: string
+    content: string
+    timestamp: string
+  }>
 }
 
 const sampleTasks: Task[] = [
   {
     id: '1',
     name: '新システム開発',
+    description: 'ECサイト構築のための新システム開発プロジェクト',
     assignee: '田中',
     progress: 65,
     startDate: '2025-01-01',
     endDate: '2025-03-31',
     duration: 90,
+    estimatedHours: 720,
+    actualHours: 468,
+    priority: 'high',
+    status: 'in-progress',
+    dependencies: [],
     level: 0,
     expanded: true,
+    comments: [
+      {
+        id: '1',
+        author: '田中',
+        content: 'プロジェクト全体の進捗は順調です。',
+        timestamp: '2025-01-15 10:00'
+      }
+    ],
     children: [
       {
         id: '1.1',
         name: '要件定義フェーズ',
+        description: 'システムの要件を定義し、機能仕様を明確にする',
         assignee: '山田',
         progress: 100,
         startDate: '2025-01-01',
         endDate: '2025-01-20',
         duration: 20,
+        estimatedHours: 160,
+        actualHours: 150,
+        priority: 'high',
+        status: 'completed',
+        dependencies: [],
         level: 1,
         expanded: true,
+        comments: [
+          {
+            id: '2',
+            author: '山田',
+            content: '要件定義が完了しました。',
+            timestamp: '2025-01-20 15:30'
+          }
+        ],
         children: [
           {
             id: '1.1.1',
             name: 'ヒアリング',
+            description: 'ステークホルダーからの要望聞き取り',
             assignee: '田中',
             progress: 100,
             startDate: '2025-01-01',
             endDate: '2025-01-10',
             duration: 10,
+            estimatedHours: 80,
+            actualHours: 75,
+            priority: 'high',
+            status: 'completed',
+            dependencies: [],
             level: 2,
+            comments: []
           },
           {
             id: '1.1.2',
             name: '要件定義書作成',
+            description: 'ヒアリング結果をもとに要件定義書を作成',
             assignee: '山田',
             progress: 100,
             startDate: '2025-01-11',
             endDate: '2025-01-20',
             duration: 10,
+            estimatedHours: 80,
+            actualHours: 75,
+            priority: 'medium',
+            status: 'completed',
+            dependencies: ['1.1.1'],
             level: 2,
+            comments: []
           },
         ],
       },
       {
         id: '1.2',
         name: '設計フェーズ',
+        description: 'システムアーキテクチャと詳細設計の作成',
         assignee: '佐藤',
         progress: 60,
         startDate: '2025-01-21',
         endDate: '2025-02-20',
         duration: 30,
+        estimatedHours: 240,
+        actualHours: 144,
+        priority: 'high',
+        status: 'in-progress',
+        dependencies: ['1.1'],
         level: 1,
         expanded: true,
+        comments: [],
         children: [
           {
             id: '1.2.1',
             name: '基本設計',
+            description: 'システム全体の基本的な設計を行う',
             assignee: '佐藤',
             progress: 80,
             startDate: '2025-01-21',
             endDate: '2025-02-05',
             duration: 15,
+            estimatedHours: 120,
+            actualHours: 96,
+            priority: 'high',
+            status: 'in-progress',
+            dependencies: [],
             level: 2,
+            comments: []
           },
           {
             id: '1.2.2',
             name: '詳細設計',
+            description: '各機能の詳細な設計書を作成する',
             assignee: '鈴木',
             progress: 40,
             startDate: '2025-02-06',
             endDate: '2025-02-20',
             duration: 15,
+            estimatedHours: 120,
+            actualHours: 48,
+            priority: 'medium',
+            status: 'in-progress',
+            dependencies: ['1.2.1'],
             level: 2,
             isOverdue: true,
+            comments: [
+              {
+                id: '3',
+                author: '鈴木',
+                content: '詳細設計でいくつか課題が見つかりました。',
+                timestamp: '2025-02-10 14:20'
+              }
+            ]
           },
         ],
       },
       {
         id: '1.3',
         name: '開発フェーズ',
+        description: 'フロントエンドとバックエンドの開発、テスト実施',
         assignee: '田中',
         progress: 20,
         startDate: '2025-02-21',
         endDate: '2025-03-31',
         duration: 38,
+        estimatedHours: 320,
+        actualHours: 64,
+        priority: 'medium',
+        status: 'not-started',
+        dependencies: ['1.2'],
         level: 1,
         expanded: true,
+        comments: [],
         children: [
           {
             id: '1.3.1',
             name: 'フロントエンド開発',
+            description: 'React.jsを使用したユーザーインターフェースの開発',
             assignee: '田中',
             progress: 30,
             startDate: '2025-02-21',
             endDate: '2025-03-15',
             duration: 22,
+            estimatedHours: 176,
+            actualHours: 53,
+            priority: 'medium',
+            status: 'not-started',
+            dependencies: [],
             level: 2,
+            comments: []
           },
           {
             id: '1.3.2',
             name: 'バックエンド開発',
+            description: 'Node.jsとExpressを使用したAPI開発',
             assignee: '山田',
             progress: 15,
             startDate: '2025-02-21',
             endDate: '2025-03-20',
             duration: 27,
+            estimatedHours: 216,
+            actualHours: 32,
+            priority: 'medium',
+            status: 'not-started',
+            dependencies: [],
             level: 2,
+            comments: []
           },
           {
             id: '1.3.3',
             name: 'テスト',
+            description: '単体テスト、結合テスト、システムテストの実施',
             assignee: '佐藤',
             progress: 0,
             startDate: '2025-03-21',
             endDate: '2025-03-31',
             duration: 10,
+            estimatedHours: 80,
+            actualHours: 0,
+            priority: 'low',
+            status: 'not-started',
+            dependencies: ['1.3.1', '1.3.2'],
             level: 2,
+            comments: []
           },
         ],
       },
